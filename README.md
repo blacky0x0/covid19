@@ -23,3 +23,11 @@
 ```
 
 ---
+
+### Swagger Endpoints
+
+* http://localhost:8080/swagger-ui/index.html
+
+![REST API](REST_API.png)
+
+---
