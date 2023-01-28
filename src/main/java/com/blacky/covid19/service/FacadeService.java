@@ -4,6 +4,7 @@ import com.blacky.covid19.http.Covid19ApiClient;
 import com.blacky.covid19.http.model.CovidOneDayResult;
 import com.blacky.covid19.model.CalculatedResult;
 import com.blacky.covid19.model.Country;
+import com.blacky.covid19.model.OneDayResult;
 import com.blacky.covid19.web.model.CalcFunction;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,22 +56,20 @@ public class FacadeService {
                     .body());
         }
 
-        CovidOneDayResult ans;
-        switch (function) {
-            case MIN -> ans = responses.stream()
-                    .flatMap(Collection::stream)
-                    .min(Comparator.comparing(CovidOneDayResult::getCases))
-                    .orElseThrow(() -> new RuntimeException("min not found"));
-            case MAX -> ans = responses.stream()
-                    .flatMap(Collection::stream)
-                    .max(Comparator.comparing(CovidOneDayResult::getCases))
-                    .orElseThrow(() -> new RuntimeException("max not found"));
-            default -> throw new IllegalStateException("Function is not supported yet");
-        }
+        OneDayResult ans = responses.stream()
+                .flatMap(Collection::stream)
+                .map(o -> OneDayResult.builder()
+                        .cases(o.getCases())
+                        .status(o.getStatus())
+                        .countryCode(o.getCountryCode())
+                        .date(o.getDate().toLocalDate())
+                        .build())
+                .reduce(function.getCasesFunction())
+                .orElseThrow(() -> new RuntimeException("No result"));
 
         return CalculatedResult.builder()
                 .confirmed(ans.getCases())
-                .date(ans.getDate().toLocalDate())
+                .date(ans.getDate())
                 .country(ans.getCountryCode())
                 .build();
     }

@@ -9,8 +9,8 @@ for a specified list of countries per day on the selected day/period.
 
 **Example:**
 
-    Input:  Find the number of cases per day in US from March 1, 2023 to March 3, 2023.
-    Output: Response of 165 cases on March 2 in the US
+    Input:  Find a minimum number of cases per day in PT/FI/US countries from March 1, 2023 to March 3, 2023.
+    Output: Response of 165 cases on March 2 in FI
 
 ### Requirements
 
