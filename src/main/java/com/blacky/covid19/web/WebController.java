@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +31,14 @@ public class WebController {
         this.service = service;
     }
 
+    @Cacheable(value = "countries")
     @Operation(summary = "Get a list of countries")
     @GetMapping("/countries")
     public List<Country> countries() {
         return service.getCountries();
     }
 
+    @Cacheable(value = "cases", key = "#function.toString() + #from + #to + #countries")
     @Operation(summary = "Get min or max confirmed cases of covid19 infection" +
             " for a specified list of countries per day on the selected day/period")
     @GetMapping("/confirmed/calc/{function}")
