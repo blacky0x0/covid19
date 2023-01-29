@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-@RetrofitClient(baseUrl = "https://api.covid19api.com/")
+@RetrofitClient(baseUrl = "${api.covid19api.com}")
 public interface Covid19ApiClient {
 
     @GET("countries")
