@@ -1,5 +1,6 @@
 package com.blacky.covid19.advice;
 
+import com.github.lianjiatech.retrofit.spring.boot.exception.RetrofitException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -36,4 +38,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = {UndeclaredThrowableException.class, RetrofitException.class})
+    protected ResponseEntity<Object> handleUndeclaredOrRetrofitException(RuntimeException ex, WebRequest request) {
+        var response = ExceptionMessage.builder()
+                .status(HttpStatus.TOO_MANY_REQUESTS.value())
+                .message("HTTP 429 Too Many Requests")
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+        log.error("Exception: {}", response, ex);
+        return new ResponseEntity<>(response, HttpStatus.TOO_MANY_REQUESTS);
+    }
+    
 }
