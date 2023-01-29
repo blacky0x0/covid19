@@ -5,6 +5,8 @@ import com.blacky.covid19.http.model.CovidOneDayResult;
 import com.blacky.covid19.model.CalculatedResult;
 import com.blacky.covid19.model.Country;
 import com.blacky.covid19.model.OneDayResult;
+import com.blacky.covid19.model.mapper.CountryMapper;
+import com.blacky.covid19.model.mapper.OneDayResultMapper;
 import com.blacky.covid19.web.model.CalcFunction;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class FacadeService {
     public List<Country> getCountries() {
         var list = httpService.getCountries().execute().body();
         return list.stream()
-                .map(c -> new Country(c.getCountry(), c.getSlug(), c.getIso2()))
+                .map(CountryMapper.MAPPER::covidCountryToCountry)
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +49,7 @@ public class FacadeService {
 
         String from = fromZdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         String to = toZdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        
+
         List<List<CovidOneDayResult>> responses = new ArrayList<>();
         for (String country : countries) {
             responses.add(httpService
@@ -58,12 +60,7 @@ public class FacadeService {
 
         OneDayResult ans = responses.stream()
                 .flatMap(Collection::stream)
-                .map(o -> OneDayResult.builder()
-                        .cases(o.getCases())
-                        .status(o.getStatus())
-                        .countryCode(o.getCountryCode())
-                        .date(o.getDate().toLocalDate())
-                        .build())
+                .map(OneDayResultMapper.MAPPER::covidOneDayResultToOneDayResult)
                 .reduce(function.getCasesFunction())
                 .orElseThrow(() -> new RuntimeException("No result"));
 
