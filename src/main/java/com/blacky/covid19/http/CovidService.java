@@ -44,7 +44,7 @@ public class CovidService {
                 : Utils.convertWithZeroHourUtc(toDate);
         
         if (fromDate.isAfter(toDate)) {
-            throw new RuntimeException("The start date cannot occur after the end date");
+            throw new IllegalArgumentException("The start date cannot occur after the end date");
         }
         
         var responses = new ArrayList<List<CovidOneDayResult>>();

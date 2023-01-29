@@ -38,7 +38,7 @@ public class FacadeService {
                 .stream()
                 .map(OneDayResultMapper.MAPPER::covidOneDayResultToOneDayResult)
                 .reduce(function.getCasesFunction())
-                .orElseThrow(() -> new RuntimeException("No results"));
+                .orElseThrow(() -> new IllegalArgumentException("No results"));
 
         return CalculatedResult.builder()
                 .confirmed(ans.getCases())
