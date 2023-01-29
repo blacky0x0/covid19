@@ -29,7 +29,6 @@ public class WebController {
         this.service = service;
     }
 
-    @Cacheable(value = "countries")
     @Operation(summary = "Get a list of countries")
     @GetMapping("/countries")
     public List<Country> countries() {

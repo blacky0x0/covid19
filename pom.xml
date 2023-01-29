@@ -40,6 +40,11 @@
             <artifactId>retrofit-spring-boot-starter</artifactId>
             <version>${retrofit-spring-boot-starter.version}</version>
         </dependency>
+        <!-- Storages -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
         <!-- Open API Documentation with Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
