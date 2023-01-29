@@ -49,7 +49,12 @@ public class CovidService {
         
         var responses = new ArrayList<List<CovidOneDayResult>>();
         var futures = new ArrayList<CompletableFuture<List<CovidOneDayResult>>>();
-        countries.forEach(country -> futures.add(httpService.getConfirmedCasesInPeriod(country, from, to)));
+        for (String country : countries) {
+            futures.add(httpService.getConfirmedCasesInPeriod(country, from, to));
+            /* Avoid HTTP 429 Too Many Requests */
+            Thread.sleep(200);
+        }
+
         for (var future : futures) {
             responses.add(future.get());
         }

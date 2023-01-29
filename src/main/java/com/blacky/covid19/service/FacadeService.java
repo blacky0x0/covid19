@@ -24,15 +24,13 @@ public class FacadeService {
     private final CountryRepository countryRepository;
 
     public List<Country> getCountries() {
-        List<Country> countries;
+        List<Country> countries = countryRepository.findAll();
 
-        if (countryRepository.count() == 0) {
+        if (countries.isEmpty()) {
             countries = covidService.getCountries().stream()
                     .map(CountryMapper.MAPPER::covidCountryToCountry)
                     .collect(Collectors.toList());
             countryRepository.saveAll(countries);
-        } else {
-            countries = countryRepository.findAll();
         }
 
         return countries;
