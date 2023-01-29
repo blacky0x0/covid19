@@ -8,7 +8,6 @@ import com.blacky.covid19.model.OneDayResult;
 import com.blacky.covid19.model.mapper.CountryMapper;
 import com.blacky.covid19.model.mapper.OneDayResultMapper;
 import com.blacky.covid19.web.model.CalcFunction;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,18 +23,19 @@ public class FacadeService {
         this.covidService = covidService;
     }
 
-    @SneakyThrows
     public List<Country> getCountries() {
         return covidService.getCountries().stream()
                 .map(CountryMapper.MAPPER::covidCountryToCountry)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
-    public CalculatedResult getConfirmedCasesInPeriod(CalcFunction function, LocalDate fromDate, LocalDate toDate, List<String> countries, String uri) {
-        List<CovidOneDayResult> list = covidService.getConfirmedCasesInPeriod(fromDate, toDate, countries);
+    public CalculatedResult getConfirmedCasesInPeriod(CalcFunction function,
+                                                      LocalDate fromDate,
+                                                      LocalDate toDate,
+                                                      List<String> countries) {
 
-        OneDayResult ans = list.stream()
+        OneDayResult ans = covidService.getConfirmedCasesInPeriod(fromDate, toDate, countries)
+                .stream()
                 .map(OneDayResultMapper.MAPPER::covidOneDayResultToOneDayResult)
                 .reduce(function.getCasesFunction())
                 .orElseThrow(() -> new RuntimeException("No results"));
@@ -46,4 +46,5 @@ public class FacadeService {
                 .country(ans.getCountryCode())
                 .build();
     }
+
 }

@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -50,9 +48,7 @@ public class WebController {
                                                    @RequestParam LocalDate to,
                                                    @RequestParam List<String> countries) {
 
-        log.debug("Received: {}", Map.of("function", function, "from", from, "to", to, "countries", countries));
-        String uri = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
-        return service.getConfirmedCasesInPeriod(function, from, to, countries, uri);
+        return service.getConfirmedCasesInPeriod(function, from, to, countries);
     }
 
 }
